@@ -19,7 +19,7 @@ COPY textures /usr/src/multicraft/textures
 
 WORKDIR /usr/src/multicraft
 
-RUN apk add --no-cache git build-base irrlicht-dev cmake bzip2-dev libpng-dev \
+RUN apk add --no-cache git build-base cmake bzip2-dev libpng-dev \
 		jpeg-dev libxxf86vm-dev mesa-dev sqlite-dev libogg-dev zstd-dev \
 		libvorbis-dev openal-soft-dev curl-dev freetype-dev zlib-dev \
 		gmp-dev jsoncpp-dev postgresql-dev luajit-dev ca-certificates && \
@@ -37,12 +37,17 @@ RUN git clone --recursive --depth=1 -b ${PROMETHEUS_CPP_VERSION} https://github.
 	make -j2 && \
 	make install
 
+# The server needs only the headers of our Irrlicht, without its SDL device
+RUN git clone --depth=1 -b SDL https://github.com/MoNTE48/Irrlicht && \
+	cp -r Irrlicht/include /usr/include/irrlicht
+
 WORKDIR /usr/src/multicraft
 RUN mkdir build && \
 	cd build && \
 	cmake .. \
 		-DCMAKE_INSTALL_PREFIX=/usr/local \
 		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_CXX_FLAGS="-DNO_IRR_COMPILE_WITH_SDL_DEVICE_" \
 		-DBUILD_SERVER=TRUE \
 		-DENABLE_PROMETHEUS=TRUE \
 		-DBUILD_UNITTESTS=FALSE \
