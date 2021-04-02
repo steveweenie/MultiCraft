@@ -19,9 +19,7 @@ COPY textures /usr/src/multicraft/textures
 
 WORKDIR /usr/src/multicraft
 
-RUN apk add --no-cache git build-base cmake bzip2-dev libpng-dev \
-		jpeg-dev libxxf86vm-dev mesa-dev sqlite-dev libogg-dev zstd-dev \
-		libvorbis-dev openal-soft-dev curl-dev freetype-dev zlib-dev \
+RUN apk add --no-cache git build-base cmake sqlite-dev curl-dev zlib-dev zstd-dev \
 		gmp-dev jsoncpp-dev postgresql-dev luajit-dev ca-certificates && \
 	git clone --depth=1 -b ${MINETEST_GAME_VERSION} https://github.com/minetest/minetest_game.git ./games/minetest_game && \
 	rm -fr ./games/minetest_game/.git
